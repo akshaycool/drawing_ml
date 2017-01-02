@@ -1,0 +1,28 @@
+Notes -> vision with machine learning 
+For the project draw_ML , we need to classify the drawn object as one of the shapes (rectangle,circle,square,etc)
+We need to understand ,how does one work with image datasets in general and then apply to the problem.
+eg Scene classification - 
+reviewed resources
+http://www-users.cs.umn.edu/~cherian/ppt/MachineLearningTut.pdf
+http://places.csail.mit.edu/ -> Scene recognition database by MIT.
+
+
+1. Image classification alogrithm 
+    1. important step to label a image given the large number of images across different categories
+
+
+
+
+
+
+
+
+
+
+
+
+Good Datasets
+1.http://deeplearning.net/datasets/
+2.http://riemenschneider.hayko.at/vision/dataset/index.php?filter=+shape -> shape datasets
+http://www.imm.dtu.dk/~aam/datasets/datasets.html
+
