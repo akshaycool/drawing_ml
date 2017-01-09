@@ -1,41 +1,28 @@
-import pickle
-import fnmatch
-import os
-import cPickle
+import cPickle as pickle
 import numpy as np
+import os
 
-def get_unpickled_file(file):
-    fo = open(file,'rb')
-    dict = cPickle.load(fo)
-    fo.close()
-    return dict
+def load_CIFAR_batch(filename):
+  """ load single batch of cifar """
+  with open(filename, 'rb') as f:
+    datadict = pickle.load(f)
+    X = datadict['data']
+    Y = datadict['labels']
+    X = X.reshape(10000, 3, 32, 32).transpose(0,2,3,1).astype("float")
+    Y = np.array(Y)
+    return X, Y
 
-def get_training_set():
-    data_files = []
-    for file in os.listdir(root_dir):
-        if fnmatch.fnmatch(file,'data_batch*'):
-            data_files.append(file)
-
-    X = []
-    Y = []
-    for file in data_files:
-        print "file",file
-        data_dict = (get_unpickled_file(root_dir+"/"+str(file)))
-        print "data_dict",len(data_dict['data'])
-        data = data_dict['data']
-        labels = data_dict['labels']
-        data_list = data.tolist()
-        X.append(data_list)
-        Y = Y + labels
-
-    X = np.vstack(X)
-    Y = np.asarray(Y)
-    print len(X),len(Y)
-    return X,Y
-
-if __name__ == '__main__':
-    root_dir = 'data/cifar-10-batches-py'
-    X ,Y = get_training_set()
-    assert len(X) == 50000
-    assert len(Y) == 50000
-
+def load_CIFAR10(ROOT):
+  """ load all of cifar """
+  xs = []
+  ys = []
+  for b in range(1,6):
+    f = os.path.join(ROOT, 'data_batch_%d' % (b, ))
+    X, Y = load_CIFAR_batch(f)
+    xs.append(X)
+    ys.append(Y)
+  Xtr = np.concatenate(xs)
+  Ytr = np.concatenate(ys)
+  del X, Y
+  Xte, Yte = load_CIFAR_batch(os.path.join(ROOT, 'test_batch'))
+  return Xtr, Ytr, Xte, Yte
