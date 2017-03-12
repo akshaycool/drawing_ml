@@ -9,7 +9,11 @@ http://places.csail.mit.edu/ -> Scene recognition database by MIT.
 
 1. Image classification alogrithm 
     1. important step to label a image given the large number of images across different categories
+    Reference 
+    http://cs231n.github.io/classification/
 
+
+    
 
 
 
@@ -25,4 +29,37 @@ Good Datasets
 1.http://deeplearning.net/datasets/
 2.http://riemenschneider.hayko.at/vision/dataset/index.php?filter=+shape -> shape datasets
 http://www.imm.dtu.dk/~aam/datasets/datasets.html
+
+
+
+
+
+
+
+
+
+
+
+
+Good way of learning the implementation of algos 
+
+1) a) https://github.com/MyHumbleSelf/cs231n/blob/master/assignment1/cs231n/
+   b) https://github.com/martinkersner/cs231n
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

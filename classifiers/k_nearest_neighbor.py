@@ -127,6 +127,9 @@ class KNearestNeighbor:
       # TODO:                                                               #
       # Compute the l2 distance between the ith test point and all training #
       # points, and store the result in dists[i, :].                        #
+      b = X[i,:]
+      a = self.X_train
+      dists[i,:] = np.sqrt(np.transpose(np.sum(np.power((b-a),2),axis=1)))
       #######################################################################
       pass
       #######################################################################
@@ -153,6 +156,26 @@ class KNearestNeighbor:
     #       and two broadcast sums.                                         #
     #########################################################################
     pass
+    # 2ways
+    #basis of the algorithm is (x-y)^2 = x^2 - 2*x*y + y^2
+    #eg X- 3x7 and X_train-5x7
+    #1st method
+    M = np.dot(X, self.X_train.T)#shape->3x5(resultant expected dim)
+    te = np.square(X).sum(axis = 1)#shape->(3x1)
+    tr = np.square(self.X_train).sum(axis = 1)#shape->(5x1)
+
+    #bringing the dimension that can be broadcasted on by using np.matrix or else doing transponse doesn't have a effect on te
+    dists = np.sqrt(-2*M+tr+np.matrix(te).T) #shape->(3x5 + 1x5 + 3x1) #bsically X is being broadcaster over the X_train matrix
+
+
+    #2nd method
+    x2 = np.sum(self.X_train*self.X_train, axis=1)
+    y2 = np.sum(X*X, axis=1)[None].T #convering normal array to matrix to get correct dimension
+    xy = np.dot(X, self.X_train.T)
+    dists = np.sqrt(x2 - 2*xy + y2)
+
+
+
     #########################################################################
     #                         END OF YOUR CODE                              #
     #########################################################################
