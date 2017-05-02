@@ -61,7 +61,6 @@ class KNearestNeighbor:
 
     num_test = X.shape[0]#500
     num_train = self.X_train.shape[0]#5000
-    print num_test,num_train
     dists = np.zeros((num_test, num_train))
 
     # for i in xrange(num_test):
@@ -109,7 +108,6 @@ class KNearestNeighbor:
         #####################################################################
         #                       END OF YOUR CODE                            #
         #####################################################################
-    print dists
     return dists
 
   def compute_distances_one_loop(self, X):
@@ -160,21 +158,24 @@ class KNearestNeighbor:
     #basis of the algorithm is (x-y)^2 = x^2 - 2*x*y + y^2
     #eg X- 3x7 and X_train-5x7
     #1st method
-    M = np.dot(X, self.X_train.T)#shape->3x5(resultant expected dim)
-    te = np.square(X).sum(axis = 1)#shape->(3x1)
-    tr = np.square(self.X_train).sum(axis = 1)#shape->(5x1)
+    # M = np.dot(X, self.X_train.T)#shape->3x5(resultant expected dim)
+    # te = np.square(X).sum(axis = 1)#shape->(3x1)
+    # tr = np.square(self.X_train).sum(axis = 1)#shape->(5x1)
 
-    #bringing the dimension that can be broadcasted on by using np.matrix or else doing transponse doesn't have a effect on te
-    dists = np.sqrt(-2*M+tr+np.matrix(te).T) #shape->(3x5 + 1x5 + 3x1) #bsically X is being broadcaster over the X_train matrix
-
-
-    #2nd method
-    x2 = np.sum(self.X_train*self.X_train, axis=1)
-    y2 = np.sum(X*X, axis=1)[None].T #convering normal array to matrix to get correct dimension
-    xy = np.dot(X, self.X_train.T)
-    dists = np.sqrt(x2 - 2*xy + y2)
+    # #bringing the dimension that can be broadcasted on by using np.matrix or else doing transponse doesn't have a effect on te
+    # dists = np.sqrt(-2*M+tr+np.matrix(te).T) #shape->(3x5 + 1x5 + 3x1) #bsically X is being broadcaster over the X_train matrix
 
 
+    # #2nd method
+    # x2 = np.sum(self.X_train*self.X_train, axis=1)
+    # y2 = np.sum(X*X, axis=1)[None].T #convering normal array to matrix to get correct dimension
+    # xy = np.dot(X, self.X_train.T)
+    # dists = np.sqrt(x2 - 2*xy + y2)
+
+    M = np.dot(X, self.X_train.T)
+    te = np.square(X).sum(axis = 1)
+    tr = np.square(self.X_train).sum(axis = 1)
+    dists = np.sqrt(-2*M+tr+np.matrix(te).T)
 
     #########################################################################
     #                         END OF YOUR CODE                              #
@@ -210,28 +211,28 @@ class KNearestNeighbor:
 
       #Method1
       
-      # print np.argsort(dists[i,:])
-      # print "before flat",self.y_train[np.argsort(dists[i,:])]
-      # labels = self.y_train[np.argsort(dists[i,:])].flatten()
-      # print "labels",labels,labels.shape
-      # closest_y = labels[0:k]
-      # print "closest_y",closest_y
+      #print np.argsort(dists[i,:])
+      #print "before flat",self.y_train[np.argsort(dists[i,:])]
+      labels = self.y_train[np.argsort(dists[i,:])].flatten()
+      #print "labels",labels,labels.shape
+      closest_y = labels[0:k]
+      #print "closest_y",closest_y
 
       #alternative
-      dists_sort = np.argsort(dists[i,:])
-      print dists_sort
-      print dists_sort < k
-      closest_y = self.y_train[np.where(dists_sort < k)].tolist()
-      print "closest_y",closest_y
+      # dists_sort = np.argsort(dists[i,:])
+      # # print dists_sort
+      # # print dists_sort < k
+      # closest_y = self.y_train[np.where(dists_sort < k)].tolist()
+      # print "closest_y",closest_y
 
-      #validating the correctness of above algo
-      state = closest_y
-      mask = np.in1d(self.y_train,state)
-      #print np.where(mask)
-      mask_arr = np.where(mask)[0]
-      assert self.y_train[mask_arr][0] in closest_y
-      assert self.y_train[mask_arr][1] in closest_y
-      assert self.y_train[mask_arr][2] in closest_y
+      # #validating the correctness of above algo
+      # state = closest_y
+      # mask = np.in1d(self.y_train,state)
+      # #print np.where(mask)
+      # mask_arr = np.where(mask)[0]
+      # assert self.y_train[mask_arr][0] in closest_y
+      # assert self.y_train[mask_arr][1] in closest_y
+      # assert self.y_train[mask_arr][2] in closest_y
       pass
       #########################################################################
       # TODO:                                                                 #
@@ -240,25 +241,24 @@ class KNearestNeighbor:
       # Store this label in y_pred[i]. Break ties by choosing the smaller     #
       # label.                                                                #
       #########################################################################
-      pass
       # Counter automatically breaks ties the right way (by choosing the smaller label):
       # >>> Counter([3, 2, 1, 3, 3, 3, 4, 1, 1, 1]).most_common(1)
       # [(1, 4)]
-      # c = Counter(closest_y)
-      # y_pred[i] = c.most_common(1)[0][0]
+      c = Counter(closest_y)
+      y_pred[i] = c.most_common(1)[0][0]
 
 
       #alternative
-      print type(closest_y),closest_y.count
-      y_pred[i] = max(set(closest_y), key=closest_y.count)
-
-
-
-
-
+      # print type(closest_y),closest_y.count
+      # y_pred[i] = max(set(closest_y), key=closest_y.count)
       #########################################################################
       #                           END OF YOUR CODE                            #
       #########################################################################
 
     return y_pred
 
+  def get_accuracy(self,y_test_pred,y_test):
+    num_correct = np.sum(y_test_pred == y_test)
+    accuracy = float(num_correct) / len(y_test)
+    #print 'Got %d / %d correct => accuracy: %f %%' % (num_correct, num_test, accuracy*100.0)
+    return accuracy
